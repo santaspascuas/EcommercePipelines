@@ -1,0 +1,28 @@
+{
+  "properties": [
+    {
+      "name": "app.cookie.secure",
+      "type": "java.lang.Boolean",
+      "description": "Si la cookie JWT se marca como Secure (true en producción).",
+      "defaultValue": true
+    },
+    {
+      "name": "app.cookie.name",
+      "type": "java.lang.String",
+      "description": "Nombre de la cookie de acceso JWT.",
+      "defaultValue": "jwt"
+    },
+    {
+      "name": "app.cookie.max-age",
+      "type": "java.lang.Integer",
+      "description": "Duración en segundos de la cookie de acceso JWT.",
+      "defaultValue": 7200
+    },
+    {
+      "name": "app.refresh.expiration-days",
+      "type": "java.lang.Integer",
+      "description": "Duración en días del refresh token.",
+      "defaultValue": 7
+    }
+  ]
+}
