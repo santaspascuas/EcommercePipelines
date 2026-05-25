@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.AplicatioEcommerce.EcoomerceAplication.module.auth.dto.AuthResult;
 import com.AplicatioEcommerce.EcoomerceAplication.module.customer.dto.CustomerDTOResponse;
 import com.AplicatioEcommerce.EcoomerceAplication.module.customer.dto.CustomerRequestDTO;
+import com.AplicatioEcommerce.EcoomerceAplication.module.customer.service.CustomerService;
 import com.AplicatioEcommerce.EcoomerceAplication.module.auth.dto.LoginRequest;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.util.JwtUtil;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.AuthenticationException;

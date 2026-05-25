@@ -15,21 +15,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.AplicatioEcommerce.EcoomerceAplication.shared.security.TenantContextFilter;
+
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
     private final JWTAuthFilter jwtAuthFilter;
-    private final TenantContextFilter tenantContextFilter;
 
     public SecurityConfig(CustomUserDetailsService userDetailsService,
                           JWTAuthFilter jwtAuthFilter,
                           TenantContextFilter tenantContextFilter) {
         this.userDetailsService = userDetailsService;
         this.jwtAuthFilter = jwtAuthFilter;
-        this.tenantContextFilter = tenantContextFilter;
     }
 
     @Bean
@@ -48,7 +47,7 @@ public class SecurityConfig {
             )
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilterAfter(tenantContextFilter, JWTAuthFilter.class);
+            .addFilterAfter(new TenantContextFilter(), JWTAuthFilter.class);
 
         // Permite frames para la consola H2 en desarrollo
         http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
@@ -62,11 +61,6 @@ public class SecurityConfig {
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
-
-
-
-
-
 
 
 
