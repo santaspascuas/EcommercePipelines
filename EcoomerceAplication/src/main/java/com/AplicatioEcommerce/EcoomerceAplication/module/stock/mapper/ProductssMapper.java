@@ -6,6 +6,10 @@ import com.AplicatioEcommerce.EcoomerceAplication.shared.model.Customer;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.model.Product;
 
 public class ProductssMapper {
+	
+
+	
+	
 
     public static ProductDTO toResponseFront(Product product) {
         ProductDTO dto = new ProductDTO();
@@ -16,31 +20,23 @@ public class ProductssMapper {
         dto.setDefaultPrice(product.getDefaultPrice());
         dto.setUnit(product.getUnit());
         dto.setCategory(product.getCategory());
-        dto.setMainTaxType(product.getMainTaxType());
-        dto.setMainTaxRate(product.getMainTaxRate());
-        dto.setIrpf(product.getIrpf());
-        dto.setEquivalenceSurcharge(product.getEquivalenceSurcharge());
-        dto.setActive(product.isActive());
         dto.setCreatedAt(product.getCreatedAt());
         dto.setUpdatedAt(product.getUpdatedAt());
         return dto;
     }
 
-    public static Product fromCreate(Customer customer, ProductDTOCreate dto) {
+    public static Product fromCreate(ProductDTOCreate dto) {
         Product product = new Product();
+        
         product.setName(dto.getName());
         product.setCode(dto.getCode());
         product.setDescription(dto.getDescription());
         product.setDefaultPrice(dto.getDefaultPrice());
         product.setUnit(dto.getUnit());
         product.setCategory(dto.getCategory());
-        product.setMainTaxType(dto.getMainTaxType());
-        product.setMainTaxRate(dto.getMainTaxRate());
-        product.setIrpf(dto.getIrpf());
-        product.setEquivalenceSurcharge(dto.getEquivalenceSurcharge());
-        product.setActive(true);
-        product.setCustomer(customer);
+        
         return product;
+        
     }
 
     public static void updateEntity(Product product, ProductDTOCreate dto) {
@@ -50,9 +46,5 @@ public class ProductssMapper {
         product.setDefaultPrice(dto.getDefaultPrice());
         product.setUnit(dto.getUnit());
         product.setCategory(dto.getCategory());
-        product.setMainTaxType(dto.getMainTaxType());
-        product.setMainTaxRate(dto.getMainTaxRate());
-        product.setIrpf(dto.getIrpf());
-        product.setEquivalenceSurcharge(dto.getEquivalenceSurcharge());
     }
 }

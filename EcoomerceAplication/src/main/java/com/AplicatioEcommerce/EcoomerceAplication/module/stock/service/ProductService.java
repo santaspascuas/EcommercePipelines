@@ -11,21 +11,19 @@ import com.AplicatioEcommerce.EcoomerceAplication.shared.model.Product;
 
 public interface ProductService {
 
-    ProductDTO anadirproductoToCatalogo(Long customerId, ProductDTOCreate product);
+    ProductDTO anadirproductoToCatalogo(ProductDTOCreate product);
 
     Product getProductFromCatalogById(Long id);
 
     Product updateProductInCatalog(Long id, ProductDTOCreate product);
 
-    String deleteProductFromCatalog(Long id);
+    void deleteProductFromCatalog(Long id);
 
-    List<Product> getAllProductsInCatalog(Long customerId);
+    List<ProductDTO> getAllProductsInCatalog();
 
-    List<Product> getAllProductsOfCustomer(Long customerId);
+    PageResult<Product> getProductsPage(PageParam pageParam);
 
-    PageResult<Product> getProductsPage(Long customerId, PageParam pageParam);
+    List<ProductDTO> getProductsOfCategory( CategoryEnum category);
 
-    List<Product> getProductsOfCategory(Long customerId, CategoryEnum category);
-
-    List<Product> getProductsByActiveStatus(Long customerId, boolean active);
+    List<Product> getProductsByActiveStatus( boolean active);
 }

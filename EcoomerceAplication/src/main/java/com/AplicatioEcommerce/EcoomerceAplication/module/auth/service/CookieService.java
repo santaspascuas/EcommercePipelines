@@ -72,8 +72,6 @@ public class CookieService {
         return extractCookieValue(request, REFRESH_COOKIE_NAME);
     }
 
-    // ── Utilidad interna ───────────────────────────────────────────────────────
-
     private String extractCookieValue(HttpServletRequest request, String name) {
         if (request.getCookies() == null) return null;
         for (Cookie cookie : request.getCookies()) {

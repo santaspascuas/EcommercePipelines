@@ -2,6 +2,8 @@
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.TenantId;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,6 +22,11 @@ public class Stock {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "stock_id_generator")
     @SequenceGenerator(name = "stock_id_generator", sequenceName = "stock_id_seq", allocationSize = 1)
     private Long stockId;
+    
+    
+    @TenantId // Clave para el aislamiento multi-tenant
+    @Column(name = "customer_id", nullable = false, updatable = false)
+    private Long customerId;
 
     @OneToOne
     @JoinColumn(name = "product_id", nullable = false, unique = true)
@@ -28,9 +35,6 @@ public class Stock {
     @Column(nullable = false)
     private Integer availableQuantity;
 
-    @Column(nullable = false)
-    private Integer reservedQuantity = 0;
-
     private LocalDateTime lastUpdated;
 
     public Stock() {}
@@ -38,22 +42,39 @@ public class Stock {
     public Stock(Product product, Integer availableQuantity) {
         this.product = product;
         this.availableQuantity = availableQuantity;
-        this.reservedQuantity = 0;
         this.lastUpdated = LocalDateTime.now();
     }
 
-    public Long getStockId() { return stockId; }
-    public void setStockId(Long stockId) { this.stockId = stockId; }
+	public Long getStockId() {
+		return stockId;
+	}
 
-    public Product getProduct() { return product; }
-    public void setProduct(Product product) { this.product = product; }
+	public void setStockId(Long stockId) {
+		this.stockId = stockId;
+	}
 
-    public Integer getAvailableQuantity() { return availableQuantity; }
-    public void setAvailableQuantity(Integer availableQuantity) { this.availableQuantity = availableQuantity; }
+	public Product getProduct() {
+		return product;
+	}
 
-    public Integer getReservedQuantity() { return reservedQuantity; }
-    public void setReservedQuantity(Integer reservedQuantity) { this.reservedQuantity = reservedQuantity; }
+	public void setProduct(Product product) {
+		this.product = product;
+	}
 
-    public LocalDateTime getLastUpdated() { return lastUpdated; }
-    public void setLastUpdated(LocalDateTime lastUpdated) { this.lastUpdated = lastUpdated; }
+	public Integer getAvailableQuantity() {
+		return availableQuantity;
+	}
+
+	public void setAvailableQuantity(Integer availableQuantity) {
+		this.availableQuantity = availableQuantity;
+	}
+
+	public LocalDateTime getLastUpdated() {
+		return lastUpdated;
+	}
+
+	public void setLastUpdated(LocalDateTime lastUpdated) {
+		this.lastUpdated = lastUpdated;
+	}
+ 
 }

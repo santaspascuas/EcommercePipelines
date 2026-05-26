@@ -37,91 +37,73 @@ public class ProductImplements implements ProductService {
 
     private static final Logger log = LoggerFactory.getLogger(ProductImplements.class);
 
-    @Override
-    @Transactional
-    public ProductDTO anadirproductoToCatalogo(Long customerId, ProductDTOCreate product) {
-        log.info("[anadirproductoToCatalogo] customerId {}", customerId);
+	@Override
+	@Transactional
+	public ProductDTO anadirproductoToCatalogo(ProductDTOCreate product) {
+		//No pasamos id porque lo pasa el hilo o theth. Captura ese detalle
+		String method = Thread.currentThread().getStackTrace()[1].getMethodName();
+		log.info("[{} Inicio del metodo]", method);
+		
+		if(productdao.existsByCode(product.getCode())) {
+			log.error("Existe ese codigo para el producto");
+			//Si existe el codigo con el producto.
+			throw new ProductException("Ya hay un producto registrado con el ticket"); 	
+		}
+		//Mapeamos y creamos
+		Product producto = ProductssMapper.fromCreate(product);
+		log.debug("{Product producto}", producto.toString());
+		//Ahora guardamos
+		Product savedProduct = productdao.save(producto);
+		// TODO Auto-generated method stub
+		
+		log.info("Fin del insert");
+		return ProductssMapper.toResponseFront(savedProduct);
+	}
 
-        Customer customer = customerdao.findById(customerId)
-                .orElseThrow(() -> new CustomerNotFoundException("No existe el autónomo con id " + customerId));
+	@Override
+	public List<ProductDTO> getAllProductsInCatalog() {
+		log.info("[getAllProductsInCatalog Inicio del método--1]");
+		return productdao.findAll()
+				.stream().
+				map(ProductssMapper::toResponseFront).toList();
+		//Stream con for para recorrerlo y luego mapeas.
+	}
 
-        if (productdao.existsByCustomerIdAndName(customerId, product.getName())) {
-            throw new ProductException(GlobalErrorCodeConstants.PRODUCT_NAME_DUPLICATE);
-        }
-        if (product.getCode() != null && productdao.existsByCode(product.getCode())) {
-            throw new ProductException(GlobalErrorCodeConstants.PRODUCT_CODE_DUPLICATE, "Código: " + product.getCode());
-        }
+	@Override
+	public PageResult<Product> getProductsPage(PageParam pageParam) {
+		
+		return null;
+	}
 
-        Product producto = ProductssMapper.fromCreate(customer, product);
-        productdao.save(producto);
-        log.info("[anadirproductoToCatalogo] Fin OK - id {}", producto.getId());
-        return ProductssMapper.toResponseFront(producto);
-    }
+	@Override
+	public List<ProductDTO> getProductsOfCategory(CategoryEnum category) {
+		// TODO Auto-generated method stub
+		return productdao.findByCategoryAndActiveTrue(category)
+				.stream()
+				.map(ProductssMapper::toResponseFront).toList();
+	}
 
-    @Override
-    public Product getProductFromCatalogById(Long id) {
-        log.info("[getProductFromCatalogById] id {}", id);
-        Product product = productdao.findById(id)
-                .orElseThrow(() -> new ProductException(GlobalErrorCodeConstants.PRODUCT_NOT_FOUND, "id: " + id));
-        checkOwnership(product.getCustomer().getId());
-        return product;
-    }
+	@Override
+	public List<Product> getProductsByActiveStatus(boolean active) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    @Override
-    @Transactional
-    public Product updateProductInCatalog(Long idProducto, ProductDTOCreate product) {
-        log.info("[updateProductInCatalog] id {}", idProducto);
-        Product producto = productdao.findById(idProducto)
-                .orElseThrow(() -> new ProductException(GlobalErrorCodeConstants.PRODUCT_NOT_FOUND, "id: " + idProducto));
-        checkOwnership(producto.getCustomer().getId());
-        ProductssMapper.updateEntity(producto, product);
-        productdao.save(producto);
-        return producto;
-    }
+	@Override
+	public Product getProductFromCatalogById(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    @Override
-    @Transactional
-    public String deleteProductFromCatalog(Long id) {
-        log.info("[deleteProductFromCatalog] id {}", id);
-        Product producto = productdao.findById(id)
-                .orElseThrow(() -> new ProductException(GlobalErrorCodeConstants.PRODUCT_NOT_FOUND, "id: " + id));
-        checkOwnership(producto.getCustomer().getId());
-        productdao.deleteById(producto.getId());
-        return "Producto " + id + " eliminado correctamente";
-    }
+	@Override
+	public Product updateProductInCatalog(Long id, ProductDTOCreate product) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    @Override
-    public List<Product> getAllProductsInCatalog(Long customerId) {
-        return productdao.findProductsByCustomer(customerId);
-    }
-
-    @Override
-    public List<Product> getAllProductsOfCustomer(Long customerId) {
-        return productdao.findProductsByCustomer(customerId);
-    }
-
-    @Override
-    public List<Product> getProductsOfCategory(Long customerId, CategoryEnum category) {
-        return productdao.getAllProductByCategory(customerId, category);
-    }
-
-    @Override
-    public List<Product> getProductsByActiveStatus(Long customerId, boolean active) {
-        return productdao.getAllProductByActiveStatus(customerId, active);
-    }
-
-    private void checkOwnership(Long ownerCustomerId) {
-        Long tenantId = TenantContextHolder.getCustomerId();
-        if (tenantId != null && !tenantId.equals(ownerCustomerId)) {
-            throw new ServiceException(GlobalErrorCodeConstants.FORBIDDEN);
-        }
-    }
-
-    @Override
-    public PageResult<Product> getProductsPage(Long customerId, PageParam pageParam) {
-        log.info("[getProductsPage] customerId={}", customerId);
-        return new PageResult<>(
-                productdao.findProductsByCustomerPaged(customerId, pageParam.toPageable(Sort.by("name").ascending()))
-        );
-    }
+	@Override
+	public void deleteProductFromCatalog(Long id) {
+		// TODO Auto-generated method stub
+		
+	}
 }

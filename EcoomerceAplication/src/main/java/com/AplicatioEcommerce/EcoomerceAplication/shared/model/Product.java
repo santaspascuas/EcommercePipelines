@@ -9,6 +9,8 @@ import jakarta.validation.constraints.DecimalMin;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.TenantId;
+
 @Entity
 @Table(name = "products")
 public class Product {
@@ -18,17 +20,21 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_id_generator")
     @SequenceGenerator(name = "product_id_generator", sequenceName = "product_id_seq", allocationSize = 1)
     private Long id;
+    
+    @TenantId // Esto diferencia a los usuarios.
+    @Column(name = "customer_id", nullable = false, updatable = false)
+    private Long customerId;
 
     @Column(nullable = false, length = 255)
     private String name;
 
-    @Column(unique = true, length = 50)
+    @Column(length = 50)
     private String code;
 
     @Column(length = 2000)
     private String description;
 
-    @Column(precision = 10, scale = 2)
+    @Column(name = "default_price", precision = 10, scale = 2, nullable = false)
     @DecimalMin("0.00")
     private BigDecimal defaultPrice;
 
@@ -36,34 +42,17 @@ public class Product {
     private String unit;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "category", nullable = false, length = 50)
     private CategoryEnum category;
-
-    @Enumerated(EnumType.STRING)
-    private TaxType mainTaxType;
-
-    @Column(precision = 5, scale = 2)
-    @DecimalMin("0.00")
-    @DecimalMax("100.00")
-    private BigDecimal mainTaxRate;
-
-    @Column(precision = 5, scale = 2)
-    @DecimalMin("0.00")
-    @DecimalMax("100.00")
-    private BigDecimal irpf;
-
-    @Column(precision = 5, scale = 2)
-    @DecimalMin("0.00")
-    @DecimalMax("100.00")
-    private BigDecimal equivalenceSurcharge;
-
+    
     @Column(nullable = false)
     private boolean active = true;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)//Dejamos que hibernate y tenat se muevan y se comunbiquen entre ellos.
+    @JoinColumn(name = "customer_id", nullable = false, insertable = false, updatable = false)
     @JsonIgnore
     private Customer customer;
 
@@ -80,48 +69,101 @@ public class Product {
 
     public Product() {}
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+	public Long getId() {
+		return id;
+	}
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getCode() { return code; }
-    public void setCode(String code) { this.code = code; }
+	public Long getCustomerId() {
+		return customerId;
+	}
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
+	}
 
-    public BigDecimal getDefaultPrice() { return defaultPrice; }
-    public void setDefaultPrice(BigDecimal defaultPrice) { this.defaultPrice = defaultPrice; }
+	public String getName() {
+		return name;
+	}
 
-    public String getUnit() { return unit; }
-    public void setUnit(String unit) { this.unit = unit; }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public CategoryEnum getCategory() { return category; }
-    public void setCategory(CategoryEnum category) { this.category = category; }
+	public String getCode() {
+		return code;
+	}
 
-    public TaxType getMainTaxType() { return mainTaxType; }
-    public void setMainTaxType(TaxType mainTaxType) { this.mainTaxType = mainTaxType; }
+	public void setCode(String code) {
+		this.code = code;
+	}
 
-    public BigDecimal getMainTaxRate() { return mainTaxRate; }
-    public void setMainTaxRate(BigDecimal mainTaxRate) { this.mainTaxRate = mainTaxRate; }
+	public String getDescription() {
+		return description;
+	}
 
-    public BigDecimal getIrpf() { return irpf; }
-    public void setIrpf(BigDecimal irpf) { this.irpf = irpf; }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public BigDecimal getEquivalenceSurcharge() { return equivalenceSurcharge; }
-    public void setEquivalenceSurcharge(BigDecimal equivalenceSurcharge) { this.equivalenceSurcharge = equivalenceSurcharge; }
+	public BigDecimal getDefaultPrice() {
+		return defaultPrice;
+	}
 
-    public boolean isActive() { return active; }
-    public void setActive(boolean active) { this.active = active; }
+	public void setDefaultPrice(BigDecimal defaultPrice) {
+		this.defaultPrice = defaultPrice;
+	}
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+	public String getUnit() {
+		return unit;
+	}
 
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+	public void setUnit(String unit) {
+		this.unit = unit;
+	}
 
-    public Customer getCustomer() { return customer; }
-    public void setCustomer(Customer customer) { this.customer = customer; }
+	public CategoryEnum getCategory() {
+		return category;
+	}
+
+	public void setCategory(CategoryEnum category) {
+		this.category = category;
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+	
+	
 }

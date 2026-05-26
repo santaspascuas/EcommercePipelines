@@ -15,55 +15,83 @@ public class ProductDTO {
     private BigDecimal defaultPrice;
     private String unit;
     private CategoryEnum category;
-    private TaxType mainTaxType;
-    private BigDecimal mainTaxRate;
-    private BigDecimal irpf;
-    private BigDecimal equivalenceSurcharge;
-    private boolean active;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public ProductDTO() {}
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+	public Long getId() {
+		return id;
+	}
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getCode() { return code; }
-    public void setCode(String code) { this.code = code; }
+	public String getName() {
+		return name;
+	}
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public BigDecimal getDefaultPrice() { return defaultPrice; }
-    public void setDefaultPrice(BigDecimal defaultPrice) { this.defaultPrice = defaultPrice; }
+	public String getCode() {
+		return code;
+	}
 
-    public String getUnit() { return unit; }
-    public void setUnit(String unit) { this.unit = unit; }
+	public void setCode(String code) {
+		this.code = code;
+	}
 
-    public CategoryEnum getCategory() { return category; }
-    public void setCategory(CategoryEnum category) { this.category = category; }
+	public String getDescription() {
+		return description;
+	}
 
-    public TaxType getMainTaxType() { return mainTaxType; }
-    public void setMainTaxType(TaxType mainTaxType) { this.mainTaxType = mainTaxType; }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public BigDecimal getMainTaxRate() { return mainTaxRate; }
-    public void setMainTaxRate(BigDecimal mainTaxRate) { this.mainTaxRate = mainTaxRate; }
+	public BigDecimal getDefaultPrice() {
+		return defaultPrice;
+	}
 
-    public BigDecimal getIrpf() { return irpf; }
-    public void setIrpf(BigDecimal irpf) { this.irpf = irpf; }
+	public void setDefaultPrice(BigDecimal defaultPrice) {
+		this.defaultPrice = defaultPrice;
+	}
 
-    public BigDecimal getEquivalenceSurcharge() { return equivalenceSurcharge; }
-    public void setEquivalenceSurcharge(BigDecimal equivalenceSurcharge) { this.equivalenceSurcharge = equivalenceSurcharge; }
+	public String getUnit() {
+		return unit;
+	}
 
-    public boolean isActive() { return active; }
-    public void setActive(boolean active) { this.active = active; }
+	public void setUnit(String unit) {
+		this.unit = unit;
+	}
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+	public CategoryEnum getCategory() {
+		return category;
+	}
 
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+	public void setCategory(CategoryEnum category) {
+		this.category = category;
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+    
+    
+ 
 }

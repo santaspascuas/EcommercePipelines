@@ -65,6 +65,22 @@ public class GlobalExceptionHandler {
                 .body(ResponseUtil.error(GlobalErrorCodeConstants.INTERNAL_SERVER_ERROR.getMessage(),
                         GlobalErrorCodeConstants.INTERNAL_SERVER_ERROR.getCode()));
     }
+    
+    @ExceptionHandler(ProductException.class)
+    public ResponseEntity<ApiResponse<Object>> handleProductExcetion(ProductException ex){
+    	ApiResponse<Object> body = ResponseUtil.error(ex.getMessage(),
+    			HttpStatus.BAD_REQUEST.value());
+    	
+    	return ResponseEntity
+    			.status(HttpStatus.BAD_REQUEST)
+    			.body(body);
+    }
+    
+    
+    
+    
+    
+    
 
     private HttpStatus resolveHttpStatus(int code) {
         if (code == 401 || (code >= 1001001 && code <= 1001005)) return HttpStatus.UNAUTHORIZED;
