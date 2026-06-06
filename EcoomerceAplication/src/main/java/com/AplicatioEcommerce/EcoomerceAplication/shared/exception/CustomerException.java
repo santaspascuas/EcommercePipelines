@@ -1,4 +1,4 @@
-﻿package com.AplicatioEcommerce.EcoomerceAplication.shared.exception;
+package com.AplicatioEcommerce.EcoomerceAplication.shared.exception;
 
 public class CustomerException extends ServiceException {
     public CustomerException(ErrorCode errorCode) {

@@ -1,4 +1,4 @@
-﻿package com.AplicatioEcommerce.EcoomerceAplication.shared.model;
+package com.AplicatioEcommerce.EcoomerceAplication.shared.model;
 
 public enum InvoiceStatus {
     DRAFT,       // borrador — no tiene número, editable

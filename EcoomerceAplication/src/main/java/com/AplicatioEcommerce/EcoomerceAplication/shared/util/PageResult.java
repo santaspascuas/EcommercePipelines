@@ -1,4 +1,4 @@
-﻿package com.AplicatioEcommerce.EcoomerceAplication.shared.util;
+package com.AplicatioEcommerce.EcoomerceAplication.shared.util;
 
 import org.springframework.data.domain.Page;
 

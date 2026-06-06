@@ -1,4 +1,4 @@
-﻿package com.AplicatioEcommerce.EcoomerceAplication.shared.exception;
+package com.AplicatioEcommerce.EcoomerceAplication.shared.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;

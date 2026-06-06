@@ -1,27 +1,23 @@
-﻿package com.AplicatioEcommerce.EcoomerceAplication.module.stock.service;
+package com.AplicatioEcommerce.EcoomerceAplication.module.stock.service;
 
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.AplicatioEcommerce.EcoomerceAplication.module.stock.dto.ProductDTO;
 import com.AplicatioEcommerce.EcoomerceAplication.module.stock.dto.ProductDTOCreate;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.util.PageParam;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.util.PageResult;
-import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.CustomerNotFoundException;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.GlobalErrorCodeConstants;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.ProductException;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.ServiceException;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.security.TenantContextHolder;
 import com.AplicatioEcommerce.EcoomerceAplication.module.stock.mapper.ProductssMapper;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.model.CategoryEnum;
-import com.AplicatioEcommerce.EcoomerceAplication.shared.model.Customer;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.model.Product;
-import com.AplicatioEcommerce.EcoomerceAplication.module.customer.repository.CustomerDao;
 import com.AplicatioEcommerce.EcoomerceAplication.module.stock.repository.ProductDao;
 
 import jakarta.transaction.Transactional;
@@ -32,17 +28,14 @@ public class ProductImplements implements ProductService {
     @Autowired
     private ProductDao productdao;
 
-    @Autowired
-    private CustomerDao customerdao;
-
     private static final Logger log = LoggerFactory.getLogger(ProductImplements.class);
 
 	@Override
 	@Transactional
 	public ProductDTO anadirproductoToCatalogo(ProductDTOCreate product) {
 		//No pasamos id porque lo pasa el hilo o theth. Captura ese detalle
-		String method = Thread.currentThread().getStackTrace()[1].getMethodName();
-		log.info("[{} Inicio del metodo]", method);
+		
+		log.info("[anadirproductoToCatalogo] Inicio del método");
 		
 		if(productdao.existsByCode(product.getCode())) {
 			log.error("Existe ese codigo para el producto");
@@ -71,39 +64,66 @@ public class ProductImplements implements ProductService {
 
 	@Override
 	public PageResult<Product> getProductsPage(PageParam pageParam) {
-		
-		return null;
+		Long customerId = TenantContextHolder.getRequiredCustomerId();
+		log.info("[getProductsPage] customerId={}", customerId);
+		return new PageResult<>(productdao.findByCustomerId(customerId, pageParam.toPageable()));
 	}
 
 	@Override
 	public List<ProductDTO> getProductsOfCategory(CategoryEnum category) {
-		// TODO Auto-generated method stub
+		log.info("[List<ProductDTO> getProductsOfCategory]");
 		return productdao.findByCategoryAndActiveTrue(category)
 				.stream()
 				.map(ProductssMapper::toResponseFront).toList();
 	}
 
 	@Override
-	public List<Product> getProductsByActiveStatus(boolean active) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<ProductDTO> getProductsByActiveStatus(boolean active) {
+		log.info("[getProductsByActiveStatus] Filtrando por estado activo: {}", active);
+		return productdao.findByActiveActive(active)
+				.stream()
+				.map(ProductssMapper::toResponseFront).toList();
 	}
 
 	@Override
-	public Product getProductFromCatalogById(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+	public ProductDTO getProductFromCatalogById(Long id) {
+		log.info("[getProductFromCatalogById] Buscando producto ID: {}", id);
+		Product producto = productdao.findById(id).orElseThrow(
+			() -> new ProductException("El producto no existe en tu catálogo.")
+		);
+		checkOwnership(producto.getCustomerId());
+		return ProductssMapper.toResponseFront(producto);
 	}
 
 	@Override
 	public Product updateProductInCatalog(Long id, ProductDTOCreate product) {
-		// TODO Auto-generated method stub
-		return null;
+		log.info("[updateProductInCatalog] Iniciando la actualizacion por ID: {}", id);
+		Product producto = productdao.findById(id).orElseThrow(
+			() -> new ProductException("El producto no existe en la database")
+		);
+		checkOwnership(producto.getCustomerId());
+		if (!producto.getCode().equalsIgnoreCase(product.getCode()) && productdao.existsByCode(product.getCode())) {
+			log.error("[updateProductInCatalog] Intento de duplicar código de producto: {}", product.getCode());
+			throw new ProductException("Ya tienes otro producto registrado con el código: " + product.getCode());
+		}
+		ProductssMapper.updateEntity(producto, product);
+		return productdao.save(producto);
 	}
 
 	@Override
 	public void deleteProductFromCatalog(Long id) {
-		// TODO Auto-generated method stub
-		
+		log.info("[deleteProductFromCatalog] Eliminando producto ID: {}", id);
+		Product producto = productdao.findById(id).orElseThrow(
+			() -> new ProductException("El producto no existe en la database")
+		);
+		checkOwnership(producto.getCustomerId());
+		productdao.delete(producto);
+	}
+
+	private void checkOwnership(Long ownerCustomerId) {
+		Long tenantId = TenantContextHolder.getCustomerId();
+		if (tenantId != null && !tenantId.equals(ownerCustomerId)) {
+			throw new ServiceException(GlobalErrorCodeConstants.FORBIDDEN);
+		}
 	}
 }

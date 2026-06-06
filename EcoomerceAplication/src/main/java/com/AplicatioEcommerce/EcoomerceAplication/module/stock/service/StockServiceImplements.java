@@ -1,4 +1,4 @@
-﻿package com.AplicatioEcommerce.EcoomerceAplication.module.stock.service;
+package com.AplicatioEcommerce.EcoomerceAplication.module.stock.service;
 
 import java.time.LocalDateTime;
 
@@ -42,7 +42,6 @@ public class StockServiceImplements implements StockService {
         }
 
         stock.setAvailableQuantity(stock.getAvailableQuantity() - quantity);
-        stock.setReservedQuantity(stock.getReservedQuantity() + quantity);
         stock.setLastUpdated(LocalDateTime.now());
         return stockdao.save(stock);
     }
@@ -55,7 +54,6 @@ public class StockServiceImplements implements StockService {
                 .orElseThrow(() -> new StockException(GlobalErrorCodeConstants.STOCK_NOT_FOUND, "productId: " + productId));
 
         stock.setAvailableQuantity(stock.getAvailableQuantity() + quantity);
-        stock.setReservedQuantity(Math.max(0, stock.getReservedQuantity() - quantity));
         stock.setLastUpdated(LocalDateTime.now());
         return stockdao.save(stock);
     }

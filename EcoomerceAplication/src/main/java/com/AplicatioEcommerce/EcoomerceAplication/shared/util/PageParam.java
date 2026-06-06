@@ -1,4 +1,4 @@
-﻿package com.AplicatioEcommerce.EcoomerceAplication.shared.util;
+package com.AplicatioEcommerce.EcoomerceAplication.shared.util;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

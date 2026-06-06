@@ -1,4 +1,4 @@
-﻿package com.AplicatioEcommerce.EcoomerceAplication.module.billing.service;
+package com.AplicatioEcommerce.EcoomerceAplication.module.billing.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -204,16 +204,13 @@ public class InvoiceServiceImplements implements InvoiceService {
         List<InvoiceItem> items = new ArrayList<>();
         for (InvoiceItemRequestDTO dto : itemDtos) {
             Product product = productDao.findById(dto.getProductId())
-                    .orElseThrow(() -> new ProductException(GlobalErrorCodeConstants.PRODUCT_NOT_FOUND,
-                            "id: " + dto.getProductId()));
+                    .orElseThrow(() -> new ProductException("id: " + dto.getProductId()));
 
             InvoiceItem item = new InvoiceItem();
             item.setInvoice(invoice);
             item.setProduct(product);
             item.setQuantity(dto.getQuantity());
             item.setUnitPrice(product.getDefaultPrice());
-            item.setTaxRate(product.getMainTaxRate() != null ? product.getMainTaxRate() : BigDecimal.ZERO);
-            item.setIrpf(product.getIrpf() != null ? product.getIrpf() : BigDecimal.ZERO);
 
             BigDecimal base = product.getDefaultPrice().multiply(BigDecimal.valueOf(dto.getQuantity()));
             item.setSubtotal(base);

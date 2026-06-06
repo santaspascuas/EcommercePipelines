@@ -1,4 +1,4 @@
-﻿package com.AplicatioEcommerce.EcoomerceAplication.shared.exception;
+package com.AplicatioEcommerce.EcoomerceAplication.shared.exception;
 
 public class InvoiceException extends ServiceException {
     public InvoiceException(ErrorCode errorCode) {

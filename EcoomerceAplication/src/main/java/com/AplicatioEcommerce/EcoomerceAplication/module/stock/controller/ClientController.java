@@ -1,4 +1,4 @@
-﻿package com.AplicatioEcommerce.EcoomerceAplication.module.stock.controller;
+package com.AplicatioEcommerce.EcoomerceAplication.module.stock.controller;
 
 import java.util.List;
 

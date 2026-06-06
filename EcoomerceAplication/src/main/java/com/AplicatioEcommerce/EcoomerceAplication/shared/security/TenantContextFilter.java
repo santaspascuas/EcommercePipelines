@@ -1,4 +1,4 @@
-﻿package com.AplicatioEcommerce.EcoomerceAplication.shared.security;
+package com.AplicatioEcommerce.EcoomerceAplication.shared.security;
 
 import java.io.IOException;
 
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.AplicatioEcommerce.EcoomerceAplication.module.auth.security.CustomUserDetails;
-import com.AplicatioEcommerce.EcoomerceAplication.module.auth.service.AuthService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -38,6 +37,7 @@ public class TenantContextFilter extends OncePerRequestFilter {
             }
             filterChain.doFilter(request, response);
         } finally {
+        	//Limpia el hilo de ejecucion.
             TenantContextHolder.clear();
         }
     }

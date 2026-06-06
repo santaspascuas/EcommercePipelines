@@ -1,4 +1,4 @@
-﻿package com.AplicatioEcommerce.EcoomerceAplication.module.stock.service;
+package com.AplicatioEcommerce.EcoomerceAplication.module.stock.service;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public interface ProductService {
 
     ProductDTO anadirproductoToCatalogo(ProductDTOCreate product);
 
-    Product getProductFromCatalogById(Long id);
+    ProductDTO getProductFromCatalogById(Long id);
 
     Product updateProductInCatalog(Long id, ProductDTOCreate product);
 
@@ -25,5 +25,5 @@ public interface ProductService {
 
     List<ProductDTO> getProductsOfCategory( CategoryEnum category);
 
-    List<Product> getProductsByActiveStatus( boolean active);
+    List<ProductDTO> getProductsByActiveStatus( boolean active);
 }

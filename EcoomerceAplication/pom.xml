@@ -29,6 +29,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<testcontainers.version>1.20.4</testcontainers.version>
+		<lombok.version>1.18.32</lombok.version>
 		<docker.image.name>ghcr.io/${env.GITHUB_REPOSITORY_OWNER}/ecommerce-backend</docker.image.name>
 	</properties>
 	<dependencyManagement>
@@ -68,7 +69,7 @@
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.6.0</version>
-		</dependency> 
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -108,7 +109,7 @@
 		    <artifactId>mockito-core</artifactId>
 		    <scope>test</scope>
 		</dependency>
-		 <dependency>
+		<dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>
             <version>0.11.5</version>
@@ -132,11 +133,9 @@
         <dependency>
 		    <groupId>org.projectlombok</groupId>
 		    <artifactId>lombok</artifactId>
-		    <version>1.18.32</version>
+		    <version>${lombok.version}</version>
 		    <scope>provided</scope>
 		</dependency>
-        
-        
 	</dependencies>
 
 	<build>
@@ -176,6 +175,7 @@
 								<path>
 									<groupId>org.projectlombok</groupId>
 									<artifactId>lombok</artifactId>
+									<version>${lombok.version}</version>
 								</path>
 							</annotationProcessorPaths>
 						</configuration>
@@ -191,6 +191,7 @@
 								<path>
 									<groupId>org.projectlombok</groupId>
 									<artifactId>lombok</artifactId>
+									<version>${lombok.version}</version>
 								</path>
 							</annotationProcessorPaths>
 						</configuration>

@@ -31,7 +31,7 @@ public class TenantRequestInterceptor implements HandlerInterceptor{
 		// 2. Si no hay JWT, buscamos si viene por un Header (ej: integraciones API o Webhooks)
         String tenantHeader = request.getHeader(TENANT_HEADER);
         
-        if(tenantHeader != null && tenantHeader.trim().isEmpty()) { 
+        if(tenantHeader != null && !tenantHeader.trim().isEmpty()) {
         log.debug("Capturamos el header '{}' porque no venía cookie con JWT", tenantHeader);
         try {
             Long tenantId = Long.parseLong(tenantHeader);

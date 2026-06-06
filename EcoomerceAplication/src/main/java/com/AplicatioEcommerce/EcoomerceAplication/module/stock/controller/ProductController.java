@@ -1,4 +1,4 @@
-﻿package com.AplicatioEcommerce.EcoomerceAplication.module.stock.controller;
+package com.AplicatioEcommerce.EcoomerceAplication.module.stock.controller;
 
 import java.util.List;
 
@@ -31,13 +31,13 @@ public class ProductController {
     public ResponseEntity<ApiResponse<ProductDTO>> crear(
             @PathVariable Long customerId,
             @RequestBody ProductDTOCreate dto) {
-        ProductDTO response = productService.anadirproductoToCatalogo(customerId, dto);
+        ProductDTO response = productService.anadirproductoToCatalogo(dto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ResponseUtil.success("Producto creado correctamente", response));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Product>> getById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<ProductDTO>> getById(@PathVariable Long id) {
         return ResponseEntity.ok(
                 ResponseUtil.success("Producto encontrado", productService.getProductFromCatalogById(id)));
     }
@@ -52,7 +52,7 @@ public class ProductController {
         pageParam.setPageNo(pageNo);
         pageParam.setPageSize(pageSize);
         return ResponseEntity.ok(
-                ResponseUtil.success("Catálogo de productos", productService.getProductsPage(customerId, pageParam)));
+                ResponseUtil.success("Catálogo de productos", productService.getProductsPage(pageParam)));
     }
 
     @PutMapping("/{id}")
@@ -66,24 +66,24 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<String>> eliminar(@PathVariable Long id) {
         return ResponseEntity.ok(
-                ResponseUtil.success("Producto eliminado", productService.deleteProductFromCatalog(id)));
+                ResponseUtil.success("Producto eliminado", "Se ha eliminado el" +id));
     }
 
     @GetMapping("/customer/{customerId}/category/{category}")
     @PreAuthorize("authentication.principal.customer.id == #customerId")
-    public ResponseEntity<ApiResponse<List<Product>>> getByCategory(
+    public ResponseEntity<ApiResponse<List<ProductDTO>>> getByCategory(
             @PathVariable Long customerId,
             @PathVariable CategoryEnum category) {
         return ResponseEntity.ok(
-                ResponseUtil.success("Productos por categoría", productService.getProductsOfCategory(customerId, category)));
+                ResponseUtil.success("Productos por categoría", productService.getProductsOfCategory(category)));
     }
 
     @GetMapping("/customer/{customerId}/active/{active}")
     @PreAuthorize("authentication.principal.customer.id == #customerId")
-    public ResponseEntity<ApiResponse<List<Product>>> getByActiveStatus(
+    public ResponseEntity<ApiResponse<List<ProductDTO>>> getByActiveStatus(
             @PathVariable Long customerId,
             @PathVariable boolean active) {
         return ResponseEntity.ok(
-                ResponseUtil.success("Productos por estado", productService.getProductsByActiveStatus(customerId, active)));
+                ResponseUtil.success("Productos por estado", productService.getProductsByActiveStatus(active)));
     }
 }

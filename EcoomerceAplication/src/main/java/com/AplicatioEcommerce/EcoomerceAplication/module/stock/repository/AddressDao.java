@@ -1,4 +1,4 @@
-﻿package com.AplicatioEcommerce.EcoomerceAplication.module.stock.repository;
+package com.AplicatioEcommerce.EcoomerceAplication.module.stock.repository;
 
 import java.util.List;
 import java.util.Optional;

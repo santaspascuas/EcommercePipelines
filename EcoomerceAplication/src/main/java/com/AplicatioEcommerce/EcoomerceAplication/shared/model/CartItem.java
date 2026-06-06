@@ -1,4 +1,4 @@
-﻿package com.AplicatioEcommerce.EcoomerceAplication.shared.model;
+package com.AplicatioEcommerce.EcoomerceAplication.shared.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

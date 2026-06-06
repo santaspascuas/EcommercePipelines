@@ -1,9 +1,7 @@
-﻿package com.AplicatioEcommerce.EcoomerceAplication.shared.security;
+package com.AplicatioEcommerce.EcoomerceAplication.shared.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.AplicatioEcommerce.EcoomerceAplication.module.auth.service.AuthService;
 
 public class TenantContextHolder {
 	

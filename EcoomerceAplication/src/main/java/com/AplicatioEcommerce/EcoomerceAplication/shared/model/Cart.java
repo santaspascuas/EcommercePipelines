@@ -1,4 +1,4 @@
-﻿package com.AplicatioEcommerce.EcoomerceAplication.shared.model;
+package com.AplicatioEcommerce.EcoomerceAplication.shared.model;
 
 import java.util.ArrayList;
 import java.util.List;

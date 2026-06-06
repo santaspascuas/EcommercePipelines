@@ -1,4 +1,4 @@
-﻿package com.AplicatioEcommerce.EcoomerceAplication.module.stock.dto;
+package com.AplicatioEcommerce.EcoomerceAplication.module.stock.dto;
 
 import com.AplicatioEcommerce.EcoomerceAplication.shared.model.CategoryEnum;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.model.TaxType;

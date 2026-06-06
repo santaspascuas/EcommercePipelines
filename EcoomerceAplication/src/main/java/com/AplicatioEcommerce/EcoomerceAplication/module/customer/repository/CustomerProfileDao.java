@@ -1,4 +1,4 @@
-﻿package com.AplicatioEcommerce.EcoomerceAplication.module.customer.repository;
+package com.AplicatioEcommerce.EcoomerceAplication.module.customer.repository;
 
 import com.AplicatioEcommerce.EcoomerceAplication.shared.model.CustomerProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
