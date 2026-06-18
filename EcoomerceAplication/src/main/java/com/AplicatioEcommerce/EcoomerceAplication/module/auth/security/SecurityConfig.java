@@ -26,8 +26,7 @@ public class SecurityConfig {
     private final JWTAuthFilter jwtAuthFilter;
 
     public SecurityConfig(CustomUserDetailsService userDetailsService,
-                          JWTAuthFilter jwtAuthFilter,
-                          TenantContextFilter tenantContextFilter) {
+                          JWTAuthFilter jwtAuthFilter) {
         this.userDetailsService = userDetailsService;
         this.jwtAuthFilter = jwtAuthFilter;
     }

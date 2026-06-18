@@ -9,13 +9,13 @@ import com.AplicatioEcommerce.EcoomerceAplication.shared.util.PageResult;
 
 public interface ClientService {
 
-    ClientResponseDTO addClient(Long customerId, ClientRequestDTO dto);
+    ClientResponseDTO addClient(ClientRequestDTO dto);
 
     ClientResponseDTO getClientById(Long clientId);
 
-    List<ClientResponseDTO> getClientsByCustomer(Long customerId);
+    List<ClientResponseDTO> getClientsByCustomer();
 
-    PageResult<ClientResponseDTO> getClientsPage(Long customerId, PageParam pageParam);
+    PageResult<ClientResponseDTO> getClientsPage(PageParam pageParam);
 
     ClientResponseDTO updateClient(Long clientId, ClientRequestDTO dto);
 

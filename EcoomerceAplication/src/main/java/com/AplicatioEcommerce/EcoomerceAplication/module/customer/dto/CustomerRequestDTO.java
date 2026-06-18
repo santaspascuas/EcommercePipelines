@@ -12,12 +12,43 @@ public class CustomerRequestDTO {
     @Pattern(regexp = "[A-Za-z0-9!@#$%^&*_]{8,15}",
             message = "La contraseña debe tener entre 8 y 15 caracteres: A-Z, a-z, 0-9 o !@#$%^&*_")
     private String password;
+    
+    @NotBlank(message = "El nombre de la compania es obligatorio")
+    private String nombreCompania;
+    
 
     public CustomerRequestDTO() {}
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+	public String getEmail() {
+		return email;
+	}
+
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+
+	public String getPassword() {
+		return password;
+	}
+
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+
+	public String getNombreCompania() {
+		return nombreCompania;
+	}
+
+
+	public void setNombreCompania(String nombreCompania) {
+		this.nombreCompania = nombreCompania;
+	}
+    
+    
+
 }

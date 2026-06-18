@@ -12,13 +12,7 @@ import com.AplicatioEcommerce.EcoomerceAplication.shared.model.Client;
 
 public interface ClientDao extends JpaRepository<Client, Long> {
 
-    @Query("SELECT c FROM Client c WHERE c.customer.id = :customerId")
-    List<Client> findByCustomerId(@Param("customerId") Long customerId);
+    boolean existsByEmail(String email);
 
-    @Query("SELECT c FROM Client c WHERE c.customer.id = :customerId")
-    Page<Client> findByCustomerIdPaged(@Param("customerId") Long customerId, Pageable pageable);
-
-    boolean existsByCustomerIdAndEmail(Long customerId, String email);
-
-    boolean existsByCustomerIdAndNif(Long customerId, String nif);
+    boolean existsByNif(String nif);
 }

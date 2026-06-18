@@ -13,15 +13,10 @@ import com.AplicatioEcommerce.EcoomerceAplication.shared.util.PageParam;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.util.PageResult;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.ClientException;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.ClientNotFoundException;
-import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.CustomerNotFoundException;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.GlobalErrorCodeConstants;
-import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.ServiceException;
 import com.AplicatioEcommerce.EcoomerceAplication.module.stock.mapper.ClientMapper;
-import com.AplicatioEcommerce.EcoomerceAplication.shared.security.TenantContextHolder;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.model.Client;
-import com.AplicatioEcommerce.EcoomerceAplication.shared.model.Customer;
 import com.AplicatioEcommerce.EcoomerceAplication.module.stock.repository.ClientDao;
-import com.AplicatioEcommerce.EcoomerceAplication.module.customer.repository.CustomerDao;
 
 import jakarta.transaction.Transactional;
 
@@ -29,30 +24,25 @@ import jakarta.transaction.Transactional;
 public class ClientServiceImplements implements ClientService {
 
     private final ClientDao clientDao;
-    private final CustomerDao customerDao;
     private static final Logger log = LoggerFactory.getLogger(ClientServiceImplements.class);
 
-    public ClientServiceImplements(ClientDao clientDao, CustomerDao customerDao) {
+    public ClientServiceImplements(ClientDao clientDao) {
         this.clientDao = clientDao;
-        this.customerDao = customerDao;
     }
 
     @Override
     @Transactional
-    public ClientResponseDTO addClient(Long customerId, ClientRequestDTO dto) {
-        log.info("[addClient] customerId={}", customerId);
+    public ClientResponseDTO addClient(ClientRequestDTO dto) {
+        log.info("[addClient] Inicio");
 
-        Customer customer = customerDao.findById(customerId)
-                .orElseThrow(() -> new CustomerNotFoundException("No existe el autónomo con id " + customerId));
-
-        if (dto.getEmail() != null && clientDao.existsByCustomerIdAndEmail(customerId, dto.getEmail())) {
+        if (dto.getEmail() != null && clientDao.existsByEmail(dto.getEmail())) {
             throw new ClientException(GlobalErrorCodeConstants.CLIENT_EMAIL_DUPLICATE);
         }
-        if (dto.getNif() != null && clientDao.existsByCustomerIdAndNif(customerId, dto.getNif())) {
+        if (dto.getNif() != null && clientDao.existsByNif(dto.getNif())) {
             throw new ClientException(GlobalErrorCodeConstants.CLIENT_NIF_DUPLICATE);
         }
 
-        Client saved = clientDao.save(ClientMapper.toEntity(customer, dto));
+        Client saved = clientDao.save(ClientMapper.toEntity(dto));
         log.info("[addClient] Fin OK - clientId={}", saved.getClientId());
         return ClientMapper.toResponse(saved);
     }
@@ -62,23 +52,22 @@ public class ClientServiceImplements implements ClientService {
         log.info("[getClientById] id={}", clientId);
         Client client = clientDao.findById(clientId)
                 .orElseThrow(() -> new ClientNotFoundException("id: " + clientId));
-        checkOwnership(client.getCustomer().getId());
         return ClientMapper.toResponse(client);
     }
 
     @Override
-    public List<ClientResponseDTO> getClientsByCustomer(Long customerId) {
-        log.info("[getClientsByCustomer] customerId={}", customerId);
-        return clientDao.findByCustomerId(customerId).stream()
+    public List<ClientResponseDTO> getClientsByCustomer() {
+        log.info("[getClientsByCustomer] Inicio");
+        return clientDao.findAll().stream()
                 .map(ClientMapper::toResponse)
                 .toList();
     }
 
     @Override
-    public PageResult<ClientResponseDTO> getClientsPage(Long customerId, PageParam pageParam) {
-        log.info("[getClientsPage] customerId={}", customerId);
+    public PageResult<ClientResponseDTO> getClientsPage(PageParam pageParam) {
+        log.info("[getClientsPage] Inicio");
         return new PageResult<>(
-                clientDao.findByCustomerIdPaged(customerId, pageParam.toPageable(Sort.by("legalName").ascending()))
+                clientDao.findAll(pageParam.toPageable(Sort.by("legalName").ascending()))
                         .map(ClientMapper::toResponse)
         );
     }
@@ -91,15 +80,12 @@ public class ClientServiceImplements implements ClientService {
         Client client = clientDao.findById(clientId)
                 .orElseThrow(() -> new ClientNotFoundException("id: " + clientId));
 
-        Long customerId = client.getCustomer().getId();
-        checkOwnership(customerId);
-
         if (dto.getEmail() != null && !dto.getEmail().equals(client.getEmail())
-                && clientDao.existsByCustomerIdAndEmail(customerId, dto.getEmail())) {
+                && clientDao.existsByEmail(dto.getEmail())) {
             throw new ClientException(GlobalErrorCodeConstants.CLIENT_EMAIL_DUPLICATE);
         }
         if (dto.getNif() != null && !dto.getNif().equals(client.getNif())
-                && clientDao.existsByCustomerIdAndNif(customerId, dto.getNif())) {
+                && clientDao.existsByNif(dto.getNif())) {
             throw new ClientException(GlobalErrorCodeConstants.CLIENT_NIF_DUPLICATE);
         }
 
@@ -113,17 +99,10 @@ public class ClientServiceImplements implements ClientService {
     @Transactional
     public void deleteClient(Long clientId) {
         log.info("[deleteClient] id={}", clientId);
-        Client client = clientDao.findById(clientId)
-                .orElseThrow(() -> new ClientNotFoundException("id: " + clientId));
-        checkOwnership(client.getCustomer().getId());
+        if (!clientDao.existsById(clientId)) {
+            throw new ClientNotFoundException("id: " + clientId);
+        }
         clientDao.deleteById(clientId);
         log.info("[deleteClient] Cliente {} eliminado", clientId);
-    }
-
-    private void checkOwnership(Long ownerCustomerId) {
-        Long tenantId = TenantContextHolder.getCustomerId();
-        if (tenantId != null && !tenantId.equals(ownerCustomerId)) {
-            throw new ServiceException(GlobalErrorCodeConstants.FORBIDDEN);
-        }
     }
 }

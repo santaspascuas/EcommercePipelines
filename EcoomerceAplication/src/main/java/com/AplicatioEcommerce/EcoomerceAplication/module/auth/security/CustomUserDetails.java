@@ -12,13 +12,25 @@ import com.AplicatioEcommerce.EcoomerceAplication.shared.model.Customer;
 public class CustomUserDetails implements UserDetails {
 
     private final Customer customer;
+    private final String tenantCode;
+    private final String schemaName;
 
     public CustomUserDetails(Customer customer) {
         this.customer = customer;
+        this.tenantCode = customer.getTenant().getTenantCode();
+        this.schemaName = customer.getTenant().getSchemaName();
     }
 
     public Customer getCustomer() {
         return customer;
+    }
+
+    public String getTenantCode() {
+        return tenantCode;
+    }
+
+    public String getSchemaName() {
+        return schemaName;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.AplicatioEcommerce.EcoomerceAplication.shared.security;
+ package com.AplicatioEcommerce.EcoomerceAplication.shared.security;
 
 import java.io.IOException;
 
@@ -16,6 +16,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+
+@Component
 public class TenantContextFilter extends OncePerRequestFilter {
 	
 	private static final Logger log = LoggerFactory.getLogger(TenantContextFilter.class);
@@ -30,13 +32,22 @@ public class TenantContextFilter extends OncePerRequestFilter {
         	log.info("[doFilterInternal] Inicio");
         	//Verificamos la autenticacon del usuario con el springcecurity
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            log.debug("Authentication auth", auth.getCredentials());
+            
             if (auth != null && auth.getPrincipal() instanceof CustomUserDetails userDetails) {
+            	log.debug("Authentication auth", auth.getCredentials());
             	//Sie entra aqui es que que esta como identificado en el contexto.
-                TenantContextHolder.setCustomerId(userDetails.getCustomer().getId());
+                TenantContextHolder.setTenantId(userDetails.getSchemaName());
+            }else {
+            	//Si hay rutas publicas-> no hay contexto y crashea.
+            	log.debug("[TenantContextFilter] Ruta pública o sin autenticar. Continuando en el esquema global (PUBLIC).");
+            	
             }
             filterChain.doFilter(request, response);
-        } finally {
+        }catch(Exception e) {
+        	log.error("[TenantContextFilter] Error inesperado en el filtro de inquilinos", e);
+            throw e; // Lanzamos para que no se quede el error oculto
+        }        
+        finally {
         	//Limpia el hilo de ejecucion.
             TenantContextHolder.clear();
         }

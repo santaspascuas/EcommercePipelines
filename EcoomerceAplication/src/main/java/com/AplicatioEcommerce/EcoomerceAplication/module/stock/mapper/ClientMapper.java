@@ -3,7 +3,6 @@ package com.AplicatioEcommerce.EcoomerceAplication.module.stock.mapper;
 import com.AplicatioEcommerce.EcoomerceAplication.module.stock.dto.ClientRequestDTO;
 import com.AplicatioEcommerce.EcoomerceAplication.module.stock.dto.ClientResponseDTO;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.model.Client;
-import com.AplicatioEcommerce.EcoomerceAplication.shared.model.Customer;
 
 public class ClientMapper {
 
@@ -27,7 +26,7 @@ public class ClientMapper {
         return dto;
     }
 
-    public static Client toEntity(Customer customer, ClientRequestDTO dto) {
+    public static Client toEntity(ClientRequestDTO dto) {
         Client client = new Client();
         client.setLegalName(dto.getLegalName());
         client.setTradeName(dto.getTradeName());
@@ -39,7 +38,6 @@ public class ClientMapper {
         client.setContactPerson(dto.getContactPerson());
         client.setNotes(dto.getNotes());
         client.setActive(true);
-        client.setCustomer(customer);
         return client;
     }
 

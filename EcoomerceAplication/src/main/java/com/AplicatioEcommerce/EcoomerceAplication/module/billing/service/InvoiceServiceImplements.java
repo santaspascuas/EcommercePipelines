@@ -20,7 +20,7 @@ import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.GlobalErrorCo
 import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.InvoiceException;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.InvoiceNotFoundException;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.ServiceException;
-import com.AplicatioEcommerce.EcoomerceAplication.shared.security.TenantContextHolder;
+import com.AplicatioEcommerce.EcoomerceAplication.shared.security.AuthenticatedCustomerResolver;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.ProductException;
 import com.AplicatioEcommerce.EcoomerceAplication.module.billing.mapper.InvoiceMapper;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.model.Address;
@@ -194,8 +194,8 @@ public class InvoiceServiceImplements implements InvoiceService {
     }
 
     private void checkOwnership(Long ownerCustomerId) {
-        Long tenantId = TenantContextHolder.getCustomerId();
-        if (tenantId != null && !tenantId.equals(ownerCustomerId)) {
+        Long currentCustomerId = AuthenticatedCustomerResolver.getCustomerId();
+        if (currentCustomerId != null && !currentCustomerId.equals(ownerCustomerId)) {
             throw new ServiceException(GlobalErrorCodeConstants.FORBIDDEN);
         }
     }

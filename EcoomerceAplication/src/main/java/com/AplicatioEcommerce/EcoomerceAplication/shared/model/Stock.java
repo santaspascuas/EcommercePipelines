@@ -23,10 +23,6 @@ public class Stock {
     @SequenceGenerator(name = "stock_id_generator", sequenceName = "stock_id_seq", allocationSize = 1)
     private Long stockId;
     
-    
-    @TenantId // Clave para el aislamiento multi-tenant
-    @Column(name = "customer_id", nullable = false, updatable = false)
-    private Long customerId;
 
     @OneToOne
     @JoinColumn(name = "product_id", nullable = false, unique = true)

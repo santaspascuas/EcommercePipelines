@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 @Table(
     name = "clients",
     uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"nif", "customer_id"}),
-        @UniqueConstraint(columnNames = {"email", "customer_id"})
+        @UniqueConstraint(columnNames = {"nif"}),
+        @UniqueConstraint(columnNames = {"email"})
     }
 )
 public class Client {
@@ -56,11 +56,6 @@ public class Client {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
-    @JsonIgnore
-    private Customer customer;
 
     @PrePersist
     protected void onCreate() {
@@ -178,14 +173,5 @@ public class Client {
 	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-
-	public Customer getCustomer() {
-		return customer;
-	}
-
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
-
     
 }

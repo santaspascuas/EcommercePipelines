@@ -14,7 +14,7 @@ import com.AplicatioEcommerce.EcoomerceAplication.shared.util.PageResult;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.GlobalErrorCodeConstants;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.ProductException;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.ServiceException;
-import com.AplicatioEcommerce.EcoomerceAplication.shared.security.TenantContextHolder;
+import com.AplicatioEcommerce.EcoomerceAplication.shared.security.AuthenticatedCustomerResolver;
 import com.AplicatioEcommerce.EcoomerceAplication.module.stock.mapper.ProductssMapper;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.model.CategoryEnum;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.model.Product;
@@ -64,9 +64,9 @@ public class ProductImplements implements ProductService {
 
 	@Override
 	public PageResult<Product> getProductsPage(PageParam pageParam) {
-		Long customerId = TenantContextHolder.getRequiredCustomerId();
-		log.info("[getProductsPage] customerId={}", customerId);
-		return new PageResult<>(productdao.findByCustomerId(customerId, pageParam.toPageable()));
+		log.info("[getProductsPage] Solicitando página de productos multi-schema");
+        // Usamos el findAll(Pageable) nativo de Spring Data, ya filtrado por el esquema de la conexión
+        return new PageResult<>(productdao.findAll(pageParam.toPageable()));
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class ProductImplements implements ProductService {
 	@Override
 	public List<ProductDTO> getProductsByActiveStatus(boolean active) {
 		log.info("[getProductsByActiveStatus] Filtrando por estado activo: {}", active);
-		return productdao.findByActiveActive(active)
+		return productdao.findByActive(active)
 				.stream()
 				.map(ProductssMapper::toResponseFront).toList();
 	}
@@ -91,7 +91,6 @@ public class ProductImplements implements ProductService {
 		Product producto = productdao.findById(id).orElseThrow(
 			() -> new ProductException("El producto no existe en tu catálogo.")
 		);
-		checkOwnership(producto.getCustomerId());
 		return ProductssMapper.toResponseFront(producto);
 	}
 
@@ -101,7 +100,6 @@ public class ProductImplements implements ProductService {
 		Product producto = productdao.findById(id).orElseThrow(
 			() -> new ProductException("El producto no existe en la database")
 		);
-		checkOwnership(producto.getCustomerId());
 		if (!producto.getCode().equalsIgnoreCase(product.getCode()) && productdao.existsByCode(product.getCode())) {
 			log.error("[updateProductInCatalog] Intento de duplicar código de producto: {}", product.getCode());
 			throw new ProductException("Ya tienes otro producto registrado con el código: " + product.getCode());
@@ -116,13 +114,12 @@ public class ProductImplements implements ProductService {
 		Product producto = productdao.findById(id).orElseThrow(
 			() -> new ProductException("El producto no existe en la database")
 		);
-		checkOwnership(producto.getCustomerId());
 		productdao.delete(producto);
 	}
 
 	private void checkOwnership(Long ownerCustomerId) {
-		Long tenantId = TenantContextHolder.getCustomerId();
-		if (tenantId != null && !tenantId.equals(ownerCustomerId)) {
+		Long currentCustomerId = AuthenticatedCustomerResolver.getCustomerId();
+		if (currentCustomerId != null && !currentCustomerId.equals(ownerCustomerId)) {
 			throw new ServiceException(GlobalErrorCodeConstants.FORBIDDEN);
 		}
 	}

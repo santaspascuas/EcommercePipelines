@@ -19,8 +19,7 @@ public class WebMvcConfig  implements WebMvcConfigurer{
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		// El interceptor actual en las rutas que se le asigne
-		WebMvcConfigurer.super.addInterceptors(registry);
+		registry.addInterceptor(tenantInterceptor);
 	}
 	
 	

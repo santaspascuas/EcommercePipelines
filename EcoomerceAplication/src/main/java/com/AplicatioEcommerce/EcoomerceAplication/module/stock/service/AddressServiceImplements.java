@@ -15,7 +15,7 @@ import com.AplicatioEcommerce.EcoomerceAplication.shared.util.PageResult;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.AdressNotFoundException;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.GlobalErrorCodeConstants;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.ServiceException;
-import com.AplicatioEcommerce.EcoomerceAplication.shared.security.TenantContextHolder;
+import com.AplicatioEcommerce.EcoomerceAplication.shared.security.AuthenticatedCustomerResolver;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.CustomerNotFoundException;
 import com.AplicatioEcommerce.EcoomerceAplication.module.stock.mapper.AddressMapper;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.model.Address;
@@ -114,8 +114,8 @@ public class AddressServiceImplements implements AddressService {
     }
 
     private void checkOwnership(Long ownerCustomerId) {
-        Long tenantId = TenantContextHolder.getCustomerId();
-        if (tenantId != null && !tenantId.equals(ownerCustomerId)) {
+        Long currentCustomerId = AuthenticatedCustomerResolver.getCustomerId();
+        if (currentCustomerId != null && !currentCustomerId.equals(ownerCustomerId)) {
             throw new ServiceException(GlobalErrorCodeConstants.FORBIDDEN);
         }
     }

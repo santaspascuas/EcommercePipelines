@@ -1,6 +1,11 @@
 package com.AplicatioEcommerce.EcoomerceAplication.module.customer.service;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
+
+import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +23,7 @@ import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.CustomerNotFo
 import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.GlobalErrorCodeConstants;
 import com.AplicatioEcommerce.EcoomerceAplication.module.customer.mapper.CustomerMapper;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.model.Customer;
+import com.AplicatioEcommerce.EcoomerceAplication.shared.model.Tenant;
 import com.AplicatioEcommerce.EcoomerceAplication.module.customer.repository.CustomerDao;
 
 import jakarta.transaction.Transactional;
@@ -29,10 +35,13 @@ public class CustomerServiceImplements implements CustomerService {
 
     private final CustomerDao customerDao;
     private final PasswordEncoder passwordEncoder;
+    private final DataSource dataSource;
 
-    public CustomerServiceImplements(CustomerDao customerDao, PasswordEncoder passwordEncoder) {
+    public CustomerServiceImplements(CustomerDao customerDao, PasswordEncoder passwordEncoder,
+    		DataSource dataSource) {
         this.customerDao = customerDao;
         this.passwordEncoder = passwordEncoder;
+        this.dataSource = dataSource;
     }
 
     @Override 
@@ -46,7 +55,15 @@ public class CustomerServiceImplements implements CustomerService {
 
         Customer customer = CustomerMapper.toEntity(dto);
         customer.setPassword(passwordEncoder.encode(dto.getPassword()));
+
+        Tenant tenant = new Tenant();
+        tenant.setCustomer(customer);
+        customer.setTenant(tenant);
+
         Customer saved = customerDao.save(customer);
+
+        //Creamos el esquema del tenant
+        createTenantSchema(saved.getTenant().getSchemaName());
 
         log.info("[anadirCustomer] Fin OK - id {}", saved.getId());
         return CustomerMapper.toResponse(saved);
@@ -118,7 +135,15 @@ public class CustomerServiceImplements implements CustomerService {
 
         Customer customer = CustomerMapper.toEntity(dto);
         customer.setPassword(passwordEncoder.encode(dto.getPassword()));
+
+        Tenant tenant = new Tenant();
+        tenant.setCustomer(customer);
+        customer.setTenant(tenant);
+
         Customer saved = customerDao.save(customer);
+
+        //Esquema anadido
+        createTenantSchema(saved.getTenant().getSchemaName());
 
         log.info("[registerCustomer] Fin OK - id {}", saved.getId());
         return CustomerMapper.toResponse(saved);
@@ -139,7 +164,17 @@ public class CustomerServiceImplements implements CustomerService {
     }
     
     
-    
-    
-    
+    private void createTenantSchema(String schemaName) {
+        log.info("[createTenantSchema] Creando esquema aislado: {}", schemaName);
+
+        try (Connection connection = dataSource.getConnection();
+             Statement statement = connection.createStatement()) {
+
+            statement.execute("CREATE SCHEMA IF NOT EXISTS \"" + schemaName + "\"");
+
+        } catch (SQLException e) {
+            log.error("[createTenantSchema] Error crítico al crear el esquema {}", schemaName, e);
+            throw new RuntimeException("Error del sistema al crear el esquema del tenant.", e);
+        }
+    }
 }

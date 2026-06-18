@@ -12,12 +12,19 @@ import com.AplicatioEcommerce.EcoomerceAplication.shared.model.CategoryEnum;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.model.Product;
 
 public interface ProductDao extends JpaRepository<Product, Long> {
-	@Query("SELECT p FROM Product p WHERE p.category = :category AND p.active = true")
+	// 1. Buscar por categoría (Solo traerá las de ESTE restaurante automáticamente)
+    @Query("SELECT p FROM Product p WHERE p.category = :category AND p.active = true")
     List<Product> findByCategoryAndActiveTrue(@Param("category") CategoryEnum category);
-	@Query("SELECT p FROM Product p WHERE p.active = :active")
-	List<Product> findByActiveActive(@Param("active") Boolean active);
-    List<Product> findByCustomerId(Long customerId);
-    Page<Product> findByCustomerId(Long customerId, Pageable pageable);
-    boolean existsByCustomerIdAndName(Long customerId, String name);
+
+    // 2. Buscar por estado activo/inactivo (Señor Tip: Spring Data JPA lo genera solo si sigues la convención de nombres)
+    List<Product> findByActive(Boolean active);
+
+    // 3. Buscar todos los productos (Reemplaza al viejo findByCustomerId. Al usar Pageable, te devuelve la paginación del restaurante actual)
+    Page<Product> findAll(Pageable pageable);
+
+    // 4. Validar si ya existe un producto con el mismo nombre en este restaurante
+    boolean existsByName(String name);
+
+    // 5. Validar si ya existe el código de barras/producto
     boolean existsByCode(String code);
 }

@@ -20,10 +20,6 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_id_generator")
     @SequenceGenerator(name = "product_id_generator", sequenceName = "product_id_seq", allocationSize = 1)
     private Long id;
-    
-    @TenantId // Esto diferencia a los usuarios.
-    @Column(name = "customer_id", nullable = false, updatable = false)
-    private Long customerId;
 
     @Column(nullable = false, length = 255)
     private String name;
@@ -51,11 +47,6 @@ public class Product {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)//Dejamos que hibernate y tenat se muevan y se comunbiquen entre ellos.
-    @JoinColumn(name = "customer_id", nullable = false, insertable = false, updatable = false)
-    @JsonIgnore
-    private Customer customer;
-
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -75,14 +66,6 @@ public class Product {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public Long getCustomerId() {
-		return customerId;
-	}
-
-	public void setCustomerId(Long customerId) {
-		this.customerId = customerId;
 	}
 
 	public String getName() {
@@ -147,14 +130,6 @@ public class Product {
 
 	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
-	}
-
-	public Customer getCustomer() {
-		return customer;
-	}
-
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
 	}
 
 	public boolean isActive() {

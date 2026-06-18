@@ -48,14 +48,11 @@ public class Customer {
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private CustomerProfile profile;
 
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    private Tenant tenant;
+
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Address> addresses = new ArrayList<>();
-
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    private List<Client> clients = new ArrayList<>();
-
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    private List<Product> products = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {
@@ -84,6 +81,14 @@ public class Customer {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public Tenant getTenant() {
+		return tenant;
+	}
+
+	public void setTenant(Tenant tenant) {
+		this.tenant = tenant;
 	}
 
 	public String getPassword() {
@@ -142,21 +147,7 @@ public class Customer {
 		this.addresses = addresses;
 	}
 
-	public List<Client> getClients() {
-		return clients;
-	}
 
-	public void setClients(List<Client> clients) {
-		this.clients = clients;
-	}
-
-	public List<Product> getProducts() {
-		return products;
-	}
-
-	public void setProducts(List<Product> products) {
-		this.products = products;
-	}
 
 	public boolean isAccountNonExpired() {
 		return accountNonExpired;

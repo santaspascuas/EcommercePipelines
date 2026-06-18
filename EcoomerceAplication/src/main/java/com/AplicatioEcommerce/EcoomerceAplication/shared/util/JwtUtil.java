@@ -24,8 +24,8 @@ public class JwtUtil {
     private static final Logger log = LoggerFactory.getLogger(JwtUtil.class);
 
     public JwtUtil(
-            @Value("${JwtUtil.expirationtime}") long expirationTime,
-            @Value("${JwtUtil.secretkey}") String secretKey) {
+            @Value("${jwt.expiration-time}") long expirationTime,
+            @Value("${jwt.secretkey}") String secretKey) {
         this.expirationTime = expirationTime;
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
     }
