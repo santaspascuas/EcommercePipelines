@@ -23,6 +23,7 @@ import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.CustomerNotFo
 import com.AplicatioEcommerce.EcoomerceAplication.shared.exception.GlobalErrorCodeConstants;
 import com.AplicatioEcommerce.EcoomerceAplication.module.customer.mapper.CustomerMapper;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.model.Customer;
+import com.AplicatioEcommerce.EcoomerceAplication.shared.model.CustomerProfile;
 import com.AplicatioEcommerce.EcoomerceAplication.shared.model.Tenant;
 import com.AplicatioEcommerce.EcoomerceAplication.module.customer.repository.CustomerDao;
 
@@ -139,6 +140,9 @@ public class CustomerServiceImplements implements CustomerService {
         Tenant tenant = new Tenant();
         tenant.setCustomer(customer);
         customer.setTenant(tenant);
+        
+        //Al parecer debemos de crear tambien al registrarnos el perfil.    
+        
 
         Customer saved = customerDao.save(customer);
 

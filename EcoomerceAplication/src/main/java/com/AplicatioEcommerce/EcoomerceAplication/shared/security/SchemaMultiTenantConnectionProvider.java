@@ -39,9 +39,12 @@ public class SchemaMultiTenantConnectionProvider  implements MultiTenantConnecti
 		
 		try {
 			
-			if(tenantIdentifier != null && !tenantIdentifier.isEmpty()) {
-				connection.setSchema(tenantIdentifier);
+			//
+			if(tenantIdentifier == null || tenantIdentifier.isBlank()) {
+				tenantIdentifier = TenantContextHolder.SYSTEM_TENANT_ID;
 			}
+				connection.setSchema(tenantIdentifier);
+			
 			
 		}catch(SQLException e) {
 			connection.close();

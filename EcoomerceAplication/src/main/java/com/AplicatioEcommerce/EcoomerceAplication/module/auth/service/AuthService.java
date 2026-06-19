@@ -58,6 +58,8 @@ public class AuthService {
         //Primero encontramos la cuenta y verificamos
         
         Customer customerEncontrado = customerService.encuentra(loguin.getEmail());
+        
+        log.debug("Customer customerEncontrado : {}",customerEncontrado.getEmail());
         //Econtrado ahora hay que validar.
         if(!customerEncontrado.isAccountNonExpired()) {
         	//Si es falso, la cuenta esta bloqueada	
@@ -77,6 +79,9 @@ public class AuthService {
             );
 
             CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(loguin.getEmail());
+            
+            log.debug("CustomUserDetails userDetails : {}", userDetails.getUsername() + userDetails.getPassword() );
+            
             Customer customer = userDetails.getCustomer();
 
             if (customer.getFailedAttempts() > 0) {
